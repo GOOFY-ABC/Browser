@@ -177,10 +177,24 @@ export function Omnibox(
 		}, 100);
 	});
 
+	use(this.url.href).listen((url) => {
+		// when the url changes, clear whatever text the user might have had in the search box
+		this.value = "";
+		// also set realvalue to clear the search results
+		this.realvalue = "";
+	});
+
 	const activate = () => {
 		this.subtleinput = false;
 		this.active = true;
 		lock();
+
+		// empty value == just represent the url
+		if (this.value == "") {
+			if (this.url.href != "puter://newtab") {
+				this.realvalue = this.value = trimUrl(this.url);
+			}
+		}
 
 		const handleClickOutside = (e: MouseEvent) => {
 			this.active = false;
@@ -193,12 +207,6 @@ export function Omnibox(
 
 		document.body.addEventListener("click", handleClickOutside);
 		document.body.addEventListener("auxclick", handleClickOutside);
-
-		if (this.url.href == "puter://newtab") {
-			this.value = "";
-		} else {
-			this.value = trimUrl(this.url);
-		}
 
 		this.input.focus();
 		this.input.select();

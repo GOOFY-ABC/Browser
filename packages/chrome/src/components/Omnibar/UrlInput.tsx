@@ -52,31 +52,37 @@ export function UrlInput(
 				.map(([active, url]) => !active && url.href != "puter://newtab")
 				.and(
 					<span class="inactiveurl">
-						{use(this.url)
-							.map((u) => u.protocol === "puter:")
-							.and(
-								<>
-									<span class="subdomain">puter://</span>
-									<span class="domain">
-										{use(this.url).map((t) => t.hostname)}
-									</span>
-									<span class="rest">
-										{use(this.url).map((t) => t.pathname + t.search + t.hash)}
-									</span>
-								</>
-							)
+						{use(this.value)
+							.and(<span class="domain">{use(this.value)}</span>)
 							.or(
-								<>
-									<span class="subdomain">
-										{use(this.url).map((t) => splitUrl(t)[0])}
-									</span>
-									<span class="domain">
-										{use(this.url).map((t) => splitUrl(t)[1])}
-									</span>
-									<span class="rest">
-										{use(this.url).map((t) => splitUrl(t)[2])}
-									</span>
-								</>
+								use(this.url)
+									.map((u) => u.protocol === "puter:")
+									.and(
+										<>
+											<span class="subdomain">puter://</span>
+											<span class="domain">
+												{use(this.url).map((t) => t.hostname)}
+											</span>
+											<span class="rest">
+												{use(this.url).map(
+													(t) => t.pathname + t.search + t.hash
+												)}
+											</span>
+										</>
+									)
+									.or(
+										<>
+											<span class="subdomain">
+												{use(this.url).map((t) => splitUrl(t)[0])}
+											</span>
+											<span class="domain">
+												{use(this.url).map((t) => splitUrl(t)[1])}
+											</span>
+											<span class="rest">
+												{use(this.url).map((t) => splitUrl(t)[2])}
+											</span>
+										</>
+									)
 							)}
 					</span>
 				)}
