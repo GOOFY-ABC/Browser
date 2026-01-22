@@ -153,6 +153,9 @@ class ProxyFrameContext {
 						tab.history.replace(new URL(url), title, state, false);
 					}
 				},
+				newtab: async ({ url }) => {
+					browser.newTab(new URL(url));
+				},
 			},
 			id,
 			(message, transfer) => {
