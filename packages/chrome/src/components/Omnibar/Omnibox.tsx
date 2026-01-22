@@ -213,20 +213,25 @@ export function Omnibox(
 		this.justselected = true;
 		this.input.scrollLeft = 0;
 
-		fetchGoogleTrending().then(() => {
-			// pick a random 3 from the cache
-			this.trendingSuggestions = trendingCached!
-				.sort(() => 0.5 - Math.random())
-				.slice(0, 3)
-				.map((t) => ({
-					kind: "trending",
-					title: t.title,
-					url: new URL(
-						`https://www.google.com/search?q=${encodeURIComponent(t.title)}`
-					),
-					favicon: "https://www.google.com/favicon.ico",
-				}));
-		});
+		if (this.url.href === "puter://newtab") {
+			// don't clutter the results if not on a newtab page
+			fetchGoogleTrending().then(() => {
+				// pick a random 3 from the cache
+				this.trendingSuggestions = trendingCached!
+					.sort(() => 0.5 - Math.random())
+					.slice(0, 3)
+					.map((t) => ({
+						kind: "trending",
+						title: t.title,
+						url: new URL(
+							`https://www.google.com/search?q=${encodeURIComponent(t.title)}`
+						),
+						favicon: "https://www.google.com/favicon.ico",
+					}));
+			});
+		} else {
+			this.trendingSuggestions = [];
+		}
 	};
 
 	const navTo = (url: URL) => {
