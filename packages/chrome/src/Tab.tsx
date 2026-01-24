@@ -183,7 +183,7 @@ export class Tab extends StatefulClass {
 			}
 		} else {
 			// placeholder title until the page fills in
-			this.title = url.href;
+			this.history.current().title = this.title = url.href;
 
 			// if (!navigator.serviceWorker.controller) {
 			// 	serviceWorkerReady.then(() => {
