@@ -6,3 +6,5 @@ test-results
 package-lock.json
 rebuild.sh
 .DS_STORE
+
+packages/scramjet/packages/runway/coverage
