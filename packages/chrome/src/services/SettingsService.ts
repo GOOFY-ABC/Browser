@@ -1,4 +1,4 @@
-import { createState, createStore } from "dreamland/core";
+import { createState, createStore, stateListen } from "dreamland/core";
 import type { Stateful } from "dreamland/core";
 import {
 	type AppearancePreference,
@@ -58,10 +58,16 @@ export class SettingsService extends Service {
 	constructor(data: SettingsServiceState | null) {
 		super();
 		if (data) {
-			this.settings = this.store(data.settings);
+			this.settings = createState(data.settings);
 		} else {
-			this.settings = this.store(DEFAULT_SETTINGS);
+			this.settings = createState(DEFAULT_SETTINGS);
 		}
+		let oldvalues: Map<any, any> = new Map();
+		stateListen(this.settings, (newvalue, prop) => {
+			if (oldvalues.get(prop) === newvalue) return;
+			this.markDirty();
+			oldvalues.set(prop, newvalue);
+		});
 	}
 
 	save(): SettingsServiceState {

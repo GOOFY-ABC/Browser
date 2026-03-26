@@ -107,15 +107,19 @@ class ProxyFrameContext {
 						) || null;
 					if (!tab) return;
 
-					console.log("TAB FOUND", url);
 					if (tab.history.justTriggeredNavigation) {
 						// url bar was typed in, we triggered this navigation, don't push a new state since we already did
 						tab.history.justTriggeredNavigation = false;
 					} else {
 						// the page just loaded on its own (a link was clicked, window.location was set)
-						tab.history.push(new URL(url), undefined, false);
+						tab.history.push(new URL(url), undefined, null, false);
 					}
 					tab.initialLoad();
+					// it won't allow scrolling inputs until the tab is focused or something
+					// for some reason frame.focus() doesn't work but frame.click() does ? even cross origin
+					if (tabsService.activetab === tab) {
+						tab.frame.frame.click();
+					}
 				},
 				titlechange: async ({ title, icon }) => {
 					if (!tab) return;
