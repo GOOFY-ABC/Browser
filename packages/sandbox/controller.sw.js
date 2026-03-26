@@ -1,105 +1,98 @@
 var $scramjetController;
 (() => {
-	// webpackBootstrap
 	var __webpack_modules__ = {
-		"./packages/scramjet/packages/rpc/index.ts":
-			/*!*************************************************!*\
-  !*** ./packages/scramjet/packages/rpc/index.ts ***!
-  \*************************************************/
-			function (
-				__unused_webpack_module,
-				__webpack_exports__,
-				__webpack_require__
-			) {
-				__webpack_require__.r(__webpack_exports__);
-				__webpack_require__.d(__webpack_exports__, {
-					RpcHelper: () => RpcHelper,
-				});
-				class RpcHelper {
-					methods;
-					id;
-					sendRaw;
-					counter = 0;
-					promiseCallbacks = new Map();
-					constructor(methods, id, sendRaw) {
-						this.methods = methods;
-						this.id = id;
-						this.sendRaw = sendRaw;
-					}
-					recieve(data) {
-						if (data === undefined || data === null || typeof data !== "object")
-							return;
-						const dt = data[this.id];
-						if (dt === undefined || dt === null || typeof dt !== "object")
-							return;
-						const type = dt.$type;
-						if (type === "response") {
-							const token = dt.$token;
-							const data = dt.$data;
-							const error = dt.$error;
-							const cb = this.promiseCallbacks.get(token);
-							if (!cb) return;
-							this.promiseCallbacks.delete(token);
-							if (error !== undefined) {
-								cb.reject(new Error(error));
-							} else {
-								cb.resolve(data);
-							}
-						} else if (type === "request") {
-							const method = dt.$method;
-							const args = dt.$args;
-							this.methods[method](args)
-								.then((r) => {
-									this.sendRaw(
-										{
-											[this.id]: {
-												$type: "response",
-												$token: dt.$token,
-												$data: r?.[0],
-											},
-										},
-										r?.[1]
-									);
-								})
-								.catch((err) => {
-									console.error(err);
-									this.sendRaw(
-										{
-											[this.id]: {
-												$type: "response",
-												$token: dt.$token,
-												$error: err?.toString() || "Unknown error",
-											},
-										},
-										[]
-									);
-								});
+		"./packages/scramjet/packages/rpc/index.ts"(
+			__unused_rspack_module,
+			__webpack_exports__,
+			__webpack_require__
+		) {
+			__webpack_require__.r(__webpack_exports__);
+			__webpack_require__.d(__webpack_exports__, {
+				RpcHelper: () => RpcHelper,
+			});
+			class RpcHelper {
+				methods;
+				id;
+				sendRaw;
+				counter = 0;
+				promiseCallbacks = new Map();
+				constructor(methods, id, sendRaw) {
+					this.methods = methods;
+					this.id = id;
+					this.sendRaw = sendRaw;
+				}
+				recieve(data) {
+					if (data === undefined || data === null || typeof data !== "object")
+						return;
+					const dt = data[this.id];
+					if (dt === undefined || dt === null || typeof dt !== "object") return;
+					const type = dt.$type;
+					if (type === "response") {
+						const token = dt.$token;
+						const data = dt.$data;
+						const error = dt.$error;
+						const cb = this.promiseCallbacks.get(token);
+						if (!cb) return;
+						this.promiseCallbacks.delete(token);
+						if (error !== undefined) {
+							cb.reject(new Error(error));
+						} else {
+							cb.resolve(data);
 						}
-					}
-					call(method, args, transfer = []) {
-						let token = this.counter++;
-						return new Promise((resolve, reject) => {
-							this.promiseCallbacks.set(token, {
-								resolve,
-								reject,
-							});
-							this.sendRaw(
-								{
-									[this.id]: {
-										$type: "request",
-										$method: method,
-										$args: args,
-										$token: token,
+					} else if (type === "request") {
+						const method = dt.$method;
+						const args = dt.$args;
+						this.methods[method](args)
+							.then((r) => {
+								this.sendRaw(
+									{
+										[this.id]: {
+											$type: "response",
+											$token: dt.$token,
+											$data: r?.[0],
+										},
 									},
-								},
-								transfer
-							);
-						});
+									r?.[1]
+								);
+							})
+							.catch((err) => {
+								console.error(err);
+								this.sendRaw(
+									{
+										[this.id]: {
+											$type: "response",
+											$token: dt.$token,
+											$error: err?.toString() || "Unknown error",
+										},
+									},
+									[]
+								);
+							});
 					}
 				}
-			},
+				call(method, args, transfer = []) {
+					let token = this.counter++;
+					return new Promise((resolve, reject) => {
+						this.promiseCallbacks.set(token, {
+							resolve,
+							reject,
+						});
+						this.sendRaw(
+							{
+								[this.id]: {
+									$type: "request",
+									$method: method,
+									$args: args,
+									$token: token,
+								},
+							},
+							transfer
+						);
+					});
+				}
+			}
+		},
 	};
-	/************************************************************************/
 	// The module cache
 	var __webpack_module_cache__ = {};
 
@@ -121,7 +114,6 @@ var $scramjetController;
 		return module.exports;
 	}
 
-	/************************************************************************/
 	// webpack/runtime/define_property_getters
 	(() => {
 		__webpack_require__.d = (exports, definition) => {
@@ -153,22 +145,16 @@ var $scramjetController;
 			Object.defineProperty(exports, "__esModule", { value: true });
 		};
 	})();
-	/************************************************************************/
 	var __webpack_exports__ = {};
 	// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 	(() => {
-		/*!*********************************************************!*\
-  !*** ./packages/scramjet/packages/controller/src/sw.ts ***!
-  \*********************************************************/
 		__webpack_require__.r(__webpack_exports__);
 		__webpack_require__.d(__webpack_exports__, {
 			route: () => route,
 			shouldRoute: () => shouldRoute,
 		});
-		/* ESM import */ var _mercuryworkshop_rpc__WEBPACK_IMPORTED_MODULE_0__ =
-			__webpack_require__(
-				/*! @mercuryworkshop/rpc */ "./packages/scramjet/packages/rpc/index.ts"
-			);
+		/* import */ var _mercuryworkshop_rpc__rspack_import_0 =
+			__webpack_require__("./packages/scramjet/packages/rpc/index.ts");
 
 		function makeId() {
 			return Math.random().toString(36).substring(2, 10);
@@ -210,45 +196,44 @@ var $scramjetController;
 			constructor(prefix, id, port) {
 				this.prefix = prefix;
 				this.id = id;
-				this.rpc =
-					new _mercuryworkshop_rpc__WEBPACK_IMPORTED_MODULE_0__.RpcHelper(
-						{
-							sendSetCookie: async ({ url, cookie }) => {
-								let clients1 = await self.clients.matchAll();
-								let promises = [];
-								for (const client of clients1) {
-									let id = makeId();
-									client.postMessage({
-										$controller$setCookie: {
-											url,
-											cookie,
-											id,
-										},
-									});
-									promises.push(
-										new Promise((resolve) => {
-											cookieResolvers[id] = resolve;
-										})
-									);
-								}
-								await Promise.race([
-									new Promise((resolve) =>
-										setTimeout(() => {
-											console.error(
-												"timed out waiting for set cookie response (deadlock?)"
-											);
-											resolve();
-										}, 1000)
-									),
-									promises,
-								]);
-							},
+				this.rpc = new _mercuryworkshop_rpc__rspack_import_0.RpcHelper(
+					{
+						sendSetCookie: async ({ url, cookie }) => {
+							let clients1 = await self.clients.matchAll();
+							let promises = [];
+							for (const client of clients1) {
+								let id = makeId();
+								client.postMessage({
+									$controller$setCookie: {
+										url,
+										cookie,
+										id,
+									},
+								});
+								promises.push(
+									new Promise((resolve) => {
+										cookieResolvers[id] = resolve;
+									})
+								);
+							}
+							await Promise.race([
+								new Promise((resolve) =>
+									setTimeout(() => {
+										console.error(
+											"timed out waiting for set cookie response (deadlock?)"
+										);
+										resolve();
+									}, 1000)
+								),
+								promises,
+							]);
 						},
-						"tabchannel-" + id,
-						(data, transfer) => {
-							port.postMessage(data, transfer);
-						}
-					);
+					},
+					"tabchannel-" + id,
+					(data, transfer) => {
+						port.postMessage(data, transfer);
+					}
+				);
 				port.onmessage = (e) => {
 					this.rpc.recieve(e.data);
 				};
@@ -263,10 +248,6 @@ var $scramjetController;
 			if (!e.data.$controller$init) return;
 			if (typeof e.data.$controller$init != "object") return;
 			const init = e.data.$controller$init;
-			const existing = tabs.findIndex((t) => t.id === init.id);
-			if (existing !== -1) {
-				tabs.splice(existing, 1);
-			}
 			tabs.push(new ControllerReference(init.prefix, init.id, e.ports[0]));
 		});
 		function shouldRoute(event) {
@@ -284,7 +265,6 @@ var $scramjetController;
 					"request",
 					{
 						rawUrl: event.request.url,
-						rawReferrer: event.request.referrer,
 						destination: event.request.destination,
 						mode: event.request.mode,
 						referrer: event.request.referrer,
@@ -312,17 +292,6 @@ var $scramjetController;
 				});
 			}
 		}
-		// the only way to know if a service worker has suddenly died is if this code runs again
-		// notify all clients to send over their messageports again
-		setTimeout(async () => {
-			console.log("service worker activated, notifying clients to revive");
-			for (const client of await clients.matchAll()) {
-				client.postMessage({
-					$controller$swrevive: {},
-				});
-			}
-			// short delay is apparently needed
-		}, 100);
 	})();
 
 	$scramjetController = __webpack_exports__;
