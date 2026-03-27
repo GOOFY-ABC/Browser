@@ -10,6 +10,7 @@ import {
 	type ScramjetFetchResponse,
 	rewriteUrl,
 	ScramjetHeaders,
+	isInlineDisplayableMimeType,
 } from "@mercuryworkshop/scramjet/bundled";
 import type {
 	RawHeaders,
@@ -178,6 +179,9 @@ class ProxyFrameContext {
 						},
 						[],
 					];
+				},
+				registerFrameContext: async ({ id: childId }) => {
+					contexts.push(new ProxyFrameContext(this.controller, childId));
 				},
 			},
 			id,
@@ -404,32 +408,8 @@ function isDownload(
 				return true;
 			}
 		} else {
-			// check mime type as fallback
-			const displayableMimes = [
-				// Text types
-				"text/html",
-				"text/plain",
-				"text/css",
-				"text/javascript",
-				"text/xml",
-				"application/javascript",
-				"application/json",
-				"application/xml",
-				"application/pdf",
-			];
-			const contentType = responseHeaders
-				.get("content-type")
-				?.split(";")[0]
-				.trim()
-				.toLowerCase();
-			if (
-				contentType &&
-				!displayableMimes.includes(contentType) &&
-				!contentType.startsWith("text") &&
-				!contentType.startsWith("image") &&
-				!contentType.startsWith("font") &&
-				!contentType.startsWith("video")
-			) {
+			const contentType = responseHeaders.get("content-type");
+			if (contentType && !isInlineDisplayableMimeType(contentType)) {
 				return true;
 			}
 		}
