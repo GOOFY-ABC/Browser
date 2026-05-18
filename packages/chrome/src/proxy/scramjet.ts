@@ -500,7 +500,7 @@ export async function handlefetch(
 		});
 	}
 
-	if (data.destination === "document" || data.destination === "iframe") {
+	if (data.rawDestination === "document" || data.rawDestination === "iframe") {
 		const unrewritten = unrewriteUrl(
 			data.rawUrl,
 			controller.fetchHandler.context
@@ -536,7 +536,7 @@ export async function handlefetch(
 	const fetchresponse = await controller.fetchHandler.handleFetch(data);
 
 	if (
-		isDownload(fetchresponse.headers, data.destination) &&
+		isDownload(fetchresponse.headers, data.rawDestination) &&
 		fetchresponse.status === 200
 	) {
 		let filename: string | null = null;
