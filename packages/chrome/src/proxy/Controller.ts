@@ -62,7 +62,7 @@ export class Controller {
 					mode: data.mode,
 					cache: data.cache,
 					referrer: data.referrer,
-					destination: data.destination,
+					rawDestination: data.destination,
 					clientId: data.clientId ?? "",
 				};
 
