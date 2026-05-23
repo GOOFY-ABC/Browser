@@ -11,6 +11,7 @@ import { DownloadsPage } from "../pages/DownloadsPage";
 import { ProxyFrame } from "../proxy/ProxyFrame";
 import { uuid } from "../util";
 import { mountedPromise } from "../App";
+import { tabsService } from "..";
 // const requestInspectElement = createDelegate<[HTMLElement, Tab]>();
 
 export type SerializedTab = {
@@ -67,7 +68,24 @@ export class Tab extends StatefulClass {
 		mountedPromise.then(() => {
 			if (history) {
 				// restore from serialized state
-				this._directnavigate(this.url);
+
+				if (
+					this.url.protocol == INTERNAL_URL_PROTOCOL ||
+					tabsService.activetab === this
+				) {
+					this._directnavigate(this.url);
+				} else {
+					// wait for this tab to become active
+					let ptr = use(tabsService.activetab).constrain(this);
+					let activated = false;
+					ptr.listen((tab) => {
+						if (tab === this && !activated) {
+							this._directnavigate(this.url);
+							ptr.unconstrain(this);
+							activated = true;
+						}
+					});
+				}
 			} else {
 				// was just created
 				this.history.push(this.url, undefined);
