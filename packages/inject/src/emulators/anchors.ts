@@ -7,10 +7,11 @@ export function setupAnchorHandler(
 ) {
 	const anchorObserver = new MutationObserver((mutations) => {
 		mutations.forEach((mutation) => {
+			// https://issues.chromium.org/issues/440360422
 			setTimeout(() => {
 				mutation.addedNodes.forEach((_node) => {
-					const node = _node as HTMLAnchorElement;
-					if ("tagName" in node && node.tagName == "A") {
+					if (client.box.instanceof(_node, "HTMLAnchorElement")) {
+						const node = _node as HTMLAnchorElement;
 						const openInNewTab = () => {
 							// note that this is the intercepted version
 							const href = node.href;
@@ -21,7 +22,9 @@ export function setupAnchorHandler(
 						};
 
 						addAlwaysLastEventListener(node, "click", (e: MouseEvent) => {
+							if (e.defaultPrevented) return;
 							if (e.button !== 0) return; // left click
+							if (node.target !== "_blank") return;
 							e.preventDefault();
 							e.stopPropagation();
 							e.stopImmediatePropagation();
@@ -29,6 +32,7 @@ export function setupAnchorHandler(
 						});
 
 						addAlwaysLastEventListener(node, "auxclick", (e: MouseEvent) => {
+							if (e.defaultPrevented) return;
 							if (e.button !== 1) return; // middle click
 							e.preventDefault();
 							e.stopPropagation();

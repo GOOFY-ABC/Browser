@@ -4,7 +4,7 @@ import {
 	SCRAMJETCLIENT,
 	ScramjetClient,
 	setWasm,
-} from "@mercuryworkshop/scramjet";
+} from "@mercuryworkshop/scramjet/bundled";
 import {
 	Chromebound,
 	Framebound,
