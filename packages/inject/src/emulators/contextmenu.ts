@@ -7,6 +7,7 @@ export function setupContextMenu(
 	addAlwaysLastEventListener: ReturnType<typeof setupAlwaysLastBubble>
 ) {
 	addAlwaysLastEventListener(self.document, "contextmenu", (e: MouseEvent) => {
+		if (e.defaultPrevented) return;
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
