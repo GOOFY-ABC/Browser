@@ -153,7 +153,20 @@ jobs:
 
       - name: Install Playwright Chromium
         if: steps.pw-browsers-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          NEEDRESTART_MODE: a
+          NEEDRESTART_SUSPEND: 1
+        run: |
+          # ubuntu-latest (24.04) ships needrestart, which prompts interactively
+          # when apt upgrades libs during `playwright install --with-deps` and
+          # hangs the step indefinitely. Neutralize it before the apt phase.
+          if [ -d /etc/needrestart/conf.d ]; then
+            echo "\$nrconf{restart} = 'a';"     | sudo tee /etc/needrestart/conf.d/00-ci.conf
+            echo "\$nrconf{kernelhints} = -1;"  | sudo tee -a /etc/needrestart/conf.d/00-ci.conf
+          fi
+          npx playwright install --with-deps chromium
         working-directory: packages/scramjet/packages/runway
 
       - name: Run Runway tests
