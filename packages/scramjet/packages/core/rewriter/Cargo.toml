@@ -1,3 +1,8 @@
+[package]
+name = "rewriter"
+version = "0.1.0"
+edition = "2021"
+
 [workspace]
 members = ["transform", "js", "native", "wasm", "coverage-macro"]
 resolver = "2"
